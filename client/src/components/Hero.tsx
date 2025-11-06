@@ -12,6 +12,7 @@ export default function Hero() {
           src={tokyoHero}
           alt="Students studying abroad in Tokyo"
           className="w-full h-full object-cover"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
       </div>

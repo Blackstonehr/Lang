@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProgramCard from "@/components/ProgramCard";
+import SEO from "@/components/SEO";
 import { type Program } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { 
@@ -31,7 +32,13 @@ export default function ProgramsPage() {
   const countries = Array.from(new Set(allPrograms?.map(p => p.country) || [])).sort();
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="Study Abroad Programs - languBridge Education Centre"
+        description="Browse our comprehensive range of study abroad programs. Filter by destination, education level, and duration. Find the perfect international education program for you."
+        keywords="study abroad programs, international education programs, study abroad destinations, high school study abroad, college study abroad"
+      />
+      <div className="min-h-screen">
       {/* Header */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-accent/10 border-b">
         <div className="container mx-auto px-4">
@@ -152,5 +159,6 @@ export default function ProgramsPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import ProgramCard from "@/components/ProgramCard";
 import Testimonials from "@/components/Testimonials";
 import ProcessSteps from "@/components/ProcessSteps";
+import SEO from "@/components/SEO";
 import { type Program } from "@shared/schema";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,13 @@ export default function HomePage() {
   });
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="languBridge Education Centre - Study Abroad Programs 2025"
+        description="Transform your future through international education. Explore study abroad programs in Tokyo, Seoul, Barcelona, and more. Expert guidance, curated programs, and 24/7 support for your study abroad journey."
+        keywords="study abroad, international education, study in Japan, study in Korea, study in Spain, Tokyo study abroad, Seoul study abroad, Barcelona study abroad"
+      />
+      <div className="min-h-screen">
       <Hero />
 
       {/* Why Choose Us Section */}
@@ -151,5 +158,6 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

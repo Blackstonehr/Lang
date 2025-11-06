@@ -28,6 +28,8 @@ export default function ProgramCard({ program }: ProgramCardProps) {
           src={getImageSrc(program.imageUrl)}
           alt={`${program.destination} study abroad program`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+          decoding="async"
         />
         {program.featured === "true" && (
           <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground" data-testid="badge-featured">

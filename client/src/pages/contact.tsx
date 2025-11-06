@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import SEO from "@/components/SEO";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 
 export default function ContactPage() {
@@ -54,7 +55,13 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="Contact Us - languBridge Education Centre"
+        description="Get in touch with our expert education counselors. Book a free consultation to discuss your study abroad options. We're here to help you every step of the way."
+        keywords="contact study abroad, study abroad consultation, education counselor, study abroad help"
+      />
+      <div className="min-h-screen">
       {/* Header */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-accent/10 border-b">
         <div className="container mx-auto px-4">
@@ -255,5 +262,6 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }
