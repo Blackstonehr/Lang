@@ -1,0 +1,87 @@
+name: Quality & Lighthouse
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - Langu-v2
+  pull_request:
+
+env:
+  DEFAULT_SITE_URL: https://langtwo.vercel.app/
+  DEFAULT_PROGRAM_SLUG: tokyo-youth
+
+jobs:
+  playwright:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Resolve test targets
+        id: targets
+        run: |
+          if [ -n "${{ secrets.SITE_URL }}" ]; then
+            echo "site=${{ secrets.SITE_URL }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "site=${{ env.DEFAULT_SITE_URL }}" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ -n "${{ secrets.PROGRAM_SLUG }}" ]; then
+            echo "slug=${{ secrets.PROGRAM_SLUG }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "slug=${{ env.DEFAULT_PROGRAM_SLUG }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Playwright tests
+        env:
+          SITE_URL: ${{ steps.targets.outputs.site }}
+          PROGRAM_SLUG: ${{ steps.targets.outputs.slug }}
+        run: npx playwright test --reporter=list
+
+  lighthouse:
+    name: Lighthouse CI
+    needs:
+      - playwright
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve site url
+        id: lighthouse-target
+        run: |
+          if [ -n "${{ secrets.SITE_URL }}" ]; then
+            echo "site=${{ secrets.SITE_URL }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "site=${{ env.DEFAULT_SITE_URL }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Lighthouse CI
+        env:
+          SITE_URL: ${{ steps.lighthouse-target.outputs.site }}
+        run: npx -y @lhci/cli autorun --collect.url="$SITE_URL"
+
