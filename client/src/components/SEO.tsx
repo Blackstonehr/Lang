@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { organizationSchema } from "../lib/structuredData";
 
 interface SEOProps {
   title?: string;
@@ -12,7 +13,7 @@ interface SEOProps {
 const defaultTitle = "languBridge Education Centre - Study Abroad Programs";
 const defaultDescription = "Transform your future through international education. Explore study abroad programs in Asia, Europe, and beyond. Expert guidance, curated programs, and 24/7 support.";
 const defaultImage = "/assets/Students_in_Tokyo_hero_366c34fa.png";
-const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://langubridge.org";
+const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://langtwo.vercel.app";
 
 export default function SEO({
   title = defaultTitle,
@@ -64,28 +65,10 @@ export default function SEO({
     }
     canonical.setAttribute("href", url);
 
-    // Structured Data (JSON-LD)
+    // Structured Data (JSON-LD) - use organizationSchema from lib
     const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      name: "languBridge Education Centre",
+      ...organizationSchema,
       description: description,
-      url: siteUrl,
-      logo: `${siteUrl}/favicon.png`,
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+1-555-123-4567",
-        contactType: "Customer Service",
-        email: "info@langubridge.org",
-      },
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "123 Education Ave, Suite 100",
-        addressLocality: "New York",
-        addressRegion: "NY",
-        postalCode: "10001",
-        addressCountry: "US",
-      },
     };
 
     // Remove existing structured data script
