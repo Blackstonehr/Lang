@@ -1,0 +1,35 @@
+name: Nightly Lighthouse Snapshot
+
+on:
+  schedule:
+    - cron: '0 05 * * *' # daily at 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  lhci:
+    name: Run LHCI snapshot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run LHCI autorun (temporary-public-storage)
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          # fallback if SITE_URL secret is not set, use DEFAULT_SITE_URL env in workflow (should be set in repo if needed)
+          if [ -z "${SITE_URL}" ]; then
+            echo "SITE_URL secret not set — aborting LHCI run"
+            exit 0
+          fi
+          npx -y @lhci/cli autorun --collect.url="${SITE_URL}" --upload.target=temporary-public-storage
+
