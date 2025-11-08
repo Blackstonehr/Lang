@@ -16,3 +16,9 @@ node_modules/
 .env.production.local
 ContinueBuilding.zip
 test-results/
+
+# Temporary output files
+ci_check.txt
+ci_run_output.txt
+prod_seo_check.txt
+untracked_files.txt
