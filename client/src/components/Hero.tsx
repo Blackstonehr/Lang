@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Globe, ArrowRight } from "lucide-react";
+import OptimizedImage from "@/components/OptimizedImage";
 import tokyoHero from "@assets/generated_images/Students_in_Tokyo_hero_366c34fa.png";
 
 export default function Hero() {
@@ -8,10 +9,11 @@ export default function Hero() {
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img
+        <OptimizedImage
           src={tokyoHero}
           alt="Students studying abroad in Tokyo"
           className="w-full h-full object-cover"
+          loading="eager"
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>

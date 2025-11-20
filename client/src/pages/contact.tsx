@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -17,27 +18,52 @@ import {
 import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import SEO from "@/components/SEO";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import FAQ from "@/components/FAQ";
+import { Mail, Phone, MapPin, Clock, CheckCircle2 } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [location] = useLocation();
+  const programParam = new URLSearchParams(location.split("?")[1] || "").get("program") || "";
+
+  const { data: programs } = useQuery<Array<{ id: string; title: string }>>({
+    queryKey: ["/api/programs"],
+  });
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields },
     reset,
     setValue,
+    watch,
   } = useForm<InsertContactSubmission>({
     resolver: zodResolver(insertContactSubmissionSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-      programInterest: "",
+      programInterest: programParam || "",
       message: "",
     }
   });
+
+  // Auto-fill program interest from URL
+  useEffect(() => {
+    if (programParam) {
+      setValue("programInterest", programParam);
+    }
+  }, [programParam, setValue]);
+
+  // Calculate form completion percentage
+  const formValues = watch();
+  const requiredFields = ["name", "email", "message"];
+  const completedFields = requiredFields.filter(
+    (field) => formValues[field as keyof InsertContactSubmission] && 
+    formValues[field as keyof InsertContactSubmission]?.toString().trim() !== ""
+  ).length;
+  const completionPercentage = (completedFields / requiredFields.length) * 100;
 
   const submitMutation = useMutation({
     mutationFn: async (data: InsertContactSubmission) => {
@@ -149,10 +175,27 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent>
                   {isSubmitted && (
-                    <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg" data-testid="message-success">
-                      <p className="text-green-800 dark:text-green-200 font-medium">
-                        Thank you for your message! We'll get back to you within 24 hours.
-                      </p>
+                    <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-3" data-testid="message-success">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-green-800 dark:text-green-200 font-medium mb-1">
+                          Thank you for your message!
+                        </p>
+                        <p className="text-sm text-green-700 dark:text-green-300">
+                          We'll get back to you within 24 hours.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Form Progress Indicator */}
+                  {!isSubmitted && (
+                    <div className="mb-6 space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Form Progress</span>
+                        <span className="font-medium">{Math.round(completionPercentage)}%</span>
+                      </div>
+                      <Progress value={completionPercentage} className="h-2" data-testid="progress-form" />
                     </div>
                   )}
 
@@ -164,11 +207,13 @@ export default function ContactPage() {
                         type="text"
                         placeholder="Your full name"
                         {...register("name")}
-                        className={errors.name ? "border-destructive" : ""}
+                        className={errors.name ? "border-destructive" : touchedFields.name && !errors.name ? "border-green-500" : ""}
+                        aria-invalid={errors.name ? "true" : "false"}
+                        aria-describedby={errors.name ? "error-name" : undefined}
                         data-testid="input-name"
                       />
                       {errors.name && (
-                        <p className="text-sm text-destructive" data-testid="error-name">
+                        <p className="text-sm text-destructive" id="error-name" data-testid="error-name" role="alert">
                           {errors.name.message}
                         </p>
                       )}
@@ -182,11 +227,13 @@ export default function ContactPage() {
                           type="email"
                           placeholder="your.email@example.com"
                           {...register("email")}
-                          className={errors.email ? "border-destructive" : ""}
+                          className={errors.email ? "border-destructive" : touchedFields.email && !errors.email ? "border-green-500" : ""}
+                          aria-invalid={errors.email ? "true" : "false"}
+                          aria-describedby={errors.email ? "error-email" : undefined}
                           data-testid="input-email"
                         />
                         {errors.email && (
-                          <p className="text-sm text-destructive" data-testid="error-email">
+                          <p className="text-sm text-destructive" id="error-email" data-testid="error-email" role="alert">
                             {errors.email.message}
                           </p>
                         )}
@@ -207,33 +254,46 @@ export default function ContactPage() {
                     <div className="space-y-2">
                       <Label htmlFor="programInterest">Program Interest (Optional)</Label>
                       <Select
+                        value={formValues.programInterest || ""}
                         onValueChange={(value) => setValue("programInterest", value)}
                       >
                         <SelectTrigger data-testid="select-program">
                           <SelectValue placeholder="Select a program" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="tokyo">Tokyo Summer Language Immersion</SelectItem>
-                          <SelectItem value="seoul">Seoul K-Culture & Business</SelectItem>
-                          <SelectItem value="barcelona">Barcelona Arts & Spanish</SelectItem>
-                          <SelectItem value="paris">Paris Language & Fashion</SelectItem>
+                          {programs?.map((program) => (
+                            <SelectItem key={program.id} value={program.title}>
+                              {program.title}
+                            </SelectItem>
+                          ))}
                           <SelectItem value="other">Other / General Inquiry</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message *</Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="message">Message *</Label>
+                        <span className="text-xs text-muted-foreground">
+                          {formValues.message?.length || 0} / 1000 characters
+                        </span>
+                      </div>
                       <Textarea
                         id="message"
                         placeholder="Tell us about your interests and how we can help you..."
                         rows={6}
+                        maxLength={1000}
                         {...register("message")}
-                        className={errors.message ? "border-destructive" : ""}
+                        className={errors.message ? "border-destructive" : touchedFields.message && !errors.message ? "border-green-500" : ""}
+                        aria-invalid={errors.message ? "true" : "false"}
+                        aria-describedby={errors.message ? "error-message" : "message-help"}
                         data-testid="input-message"
                       />
+                      <p id="message-help" className="text-xs text-muted-foreground">
+                        Minimum 10 characters required
+                      </p>
                       {errors.message && (
-                        <p className="text-sm text-destructive" data-testid="error-message">
+                        <p className="text-sm text-destructive" id="error-message" data-testid="error-message" role="alert">
                           {errors.message.message}
                         </p>
                       )}
@@ -261,6 +321,9 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQ />
     </div>
     </>
   );

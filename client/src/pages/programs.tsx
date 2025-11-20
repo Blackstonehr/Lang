@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import ProgramCard from "@/components/ProgramCard";
 import SEO from "@/components/SEO";
 import { type Program } from "@shared/schema";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
   Select,
   SelectContent,
@@ -11,22 +13,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter } from "lucide-react";
+import { Filter, Search, X } from "lucide-react";
 
 export default function ProgramsPage() {
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [selectedCountry, setSelectedCountry] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { data: allPrograms, isLoading } = useQuery<Program[]>({
     queryKey: ["/api/programs"],
   });
 
-  // Filter programs based on selections
-  const filteredPrograms = allPrograms?.filter(program => {
-    const levelMatch = selectedLevel === "all" || program.level.includes(selectedLevel);
-    const countryMatch = selectedCountry === "all" || program.country === selectedCountry;
-    return levelMatch && countryMatch;
-  }) || [];
+  // Filter programs based on selections and search query
+  const filteredPrograms = useMemo(() => {
+    if (!allPrograms) return [];
+    
+    return allPrograms.filter(program => {
+      const levelMatch = selectedLevel === "all" || program.level.includes(selectedLevel);
+      const countryMatch = selectedCountry === "all" || program.country === selectedCountry;
+      
+      // Search filter
+      const searchMatch = searchQuery === "" || 
+        program.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return levelMatch && countryMatch && searchMatch;
+    });
+  }, [allPrograms, selectedLevel, selectedCountry, searchQuery]);
 
   // Get unique countries from programs
   const countries = Array.from(new Set(allPrograms?.map(p => p.country) || [])).sort();
@@ -56,6 +71,31 @@ export default function ProgramsPage() {
       {/* Filters */}
       <section className="py-8 bg-card border-b sticky top-20 z-40 backdrop-blur-sm bg-card/95">
         <div className="container mx-auto px-4">
+          {/* Search Bar */}
+          <div className="mb-6 max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search programs by name, destination, or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10"
+                data-testid="input-search"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear search"
+                  data-testid="button-clear-search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Filter className="w-4 h-4" />
@@ -91,16 +131,17 @@ export default function ProgramsPage() {
                 </SelectContent>
               </Select>
 
-              {(selectedLevel !== "all" || selectedCountry !== "all") && (
+              {(selectedLevel !== "all" || selectedCountry !== "all" || searchQuery) && (
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSelectedLevel("all");
                     setSelectedCountry("all");
+                    setSearchQuery("");
                   }}
                   data-testid="button-clear-filters"
                 >
-                  Clear Filters
+                  Clear All
                 </Button>
               )}
             </div>
@@ -153,9 +194,11 @@ export default function ProgramsPage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Our education counselors can help you find the perfect program that matches your goals and interests.
           </p>
-          <Button size="lg" data-testid="button-contact-counselor">
-            Contact Our Counselors
-          </Button>
+          <Link href="/contact">
+            <Button size="lg" data-testid="button-contact-counselor" aria-label="Contact our education counselors">
+              Contact Our Counselors
+            </Button>
+          </Link>
         </div>
       </section>
     </div>
