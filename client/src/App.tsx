@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 // Code splitting - lazy load pages
 const HomePage = lazy(() => import("@/pages/home"));
 const ProgramsPage = lazy(() => import("@/pages/programs"));
+const ProgramDetailPage = lazy(() => import("@/pages/program-detail"));
 const ContactPage = lazy(() => import("@/pages/contact"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
@@ -26,12 +27,13 @@ function PageLoader() {
 function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <Switch>
-        <Route path="/" component={HomePage} />
-        <Route path="/programs" component={ProgramsPage} />
-        <Route path="/contact" component={ContactPage} />
-        <Route component={NotFound} />
-      </Switch>
+        <Switch>
+          <Route path="/" component={HomePage} />
+          <Route path="/programs/:id" component={ProgramDetailPage} />
+          <Route path="/programs" component={ProgramsPage} />
+          <Route path="/contact" component={ContactPage} />
+          <Route component={NotFound} />
+        </Switch>
     </Suspense>
   );
 }

@@ -4,28 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users, DollarSign } from "lucide-react";
 import { type Program } from "@shared/schema";
-import tokyoHero from "@assets/generated_images/Students_in_Tokyo_hero_366c34fa.png";
-import koreaHero from "@assets/generated_images/Students_in_Korea_hero_f1ab5dd2.png";
-import studentsHero from "@assets/generated_images/Students_studying_together_hero_65ed8f9a.png";
+import { getProgramImage } from "@/lib/programImages";
 
 interface ProgramCardProps {
   program: Program;
 }
 
 export default function ProgramCard({ program }: ProgramCardProps) {
-  // Map image URLs to actual imported images
-  const getImageSrc = (imageUrl: string) => {
-    if (imageUrl.includes("Tokyo")) return tokyoHero;
-    if (imageUrl.includes("Korea")) return koreaHero;
-    return studentsHero;
-  };
-
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden" data-testid={`card-program-${program.id}`}>
       {/* Image */}
       <div className="relative aspect-[16/9] overflow-hidden">
         <img
-          src={getImageSrc(program.imageUrl)}
+          src={getProgramImage(program.imageUrl)}
           alt={`${program.destination} study abroad program`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
@@ -90,7 +81,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
       </CardContent>
 
       <CardFooter className="pt-0">
-        <Link href={`/programs`}>
+        <Link href={`/programs/${program.id}`}>
           <Button className="w-full" data-testid="button-learn-more">
             Learn More & Apply
           </Button>
