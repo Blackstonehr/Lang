@@ -35,7 +35,7 @@ export default function Navigation() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8" aria-label="Main navigation">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}>
               <a
@@ -43,15 +43,16 @@ export default function Navigation() {
                   isActive(link.href) ? "text-primary" : "text-foreground"
                 }`}
                 data-testid={`link-${link.label.toLowerCase()}`}
+                aria-current={isActive(link.href) ? "page" : undefined}
               >
                 {link.label}
               </a>
             </Link>
           ))}
           <Link href="/contact">
-            <Button data-testid="button-apply">Apply Now</Button>
+            <Button data-testid="button-apply" aria-label="Apply for study abroad program">Apply Now</Button>
           </Link>
-        </div>
+        </nav>
 
         {/* Mobile Menu Button */}
         <button
@@ -65,7 +66,7 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="absolute top-20 left-0 right-0 bg-background border-b md:hidden shadow-lg">
+          <nav className="absolute top-20 left-0 right-0 bg-background border-b md:hidden shadow-lg" aria-label="Mobile navigation">
             <div className="flex flex-col space-y-4 p-6">
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href}>
@@ -75,18 +76,19 @@ export default function Navigation() {
                     }`}
                     onClick={() => setIsOpen(false)}
                     data-testid={`link-mobile-${link.label.toLowerCase()}`}
+                    aria-current={isActive(link.href) ? "page" : undefined}
                   >
                     {link.label}
                   </a>
                 </Link>
               ))}
               <Link href="/contact">
-                <Button className="w-full" onClick={() => setIsOpen(false)} data-testid="button-mobile-apply">
+                <Button className="w-full" onClick={() => setIsOpen(false)} data-testid="button-mobile-apply" aria-label="Apply for study abroad program">
                   Apply Now
                 </Button>
               </Link>
             </div>
-          </div>
+          </nav>
         )}
       </div>
     </nav>
