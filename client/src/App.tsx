@@ -7,10 +7,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SkipLink from "@/components/SkipLink";
 
 // Code splitting - lazy load pages
 const HomePage = lazy(() => import("@/pages/home"));
 const ProgramsPage = lazy(() => import("@/pages/programs"));
+const ProgramDetailPage = lazy(() => import("@/pages/program-detail"));
 const ContactPage = lazy(() => import("@/pages/contact"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
@@ -29,6 +31,7 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/programs" component={ProgramsPage} />
+        <Route path="/program-detail" component={ProgramDetailPage} />
         <Route path="/contact" component={ContactPage} />
         <Route component={NotFound} />
       </Switch>
@@ -41,9 +44,10 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <SkipLink />
           <div className="min-h-screen flex flex-col">
             <Navigation />
-            <main className="flex-1">
+            <main id="main-content" className="flex-1" tabIndex={-1}>
               <Router />
             </main>
             <Footer />

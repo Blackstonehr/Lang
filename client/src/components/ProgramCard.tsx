@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users, DollarSign } from "lucide-react";
 import { type Program } from "@shared/schema";
+import OptimizedImage from "@/components/OptimizedImage";
 import tokyoHero from "@assets/generated_images/Students_in_Tokyo_hero_366c34fa.png";
 import koreaHero from "@assets/generated_images/Students_in_Korea_hero_f1ab5dd2.png";
 import studentsHero from "@assets/generated_images/Students_studying_together_hero_65ed8f9a.png";
@@ -24,12 +25,12 @@ export default function ProgramCard({ program }: ProgramCardProps) {
     <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden" data-testid={`card-program-${program.id}`}>
       {/* Image */}
       <div className="relative aspect-[16/9] overflow-hidden">
-        <img
+        <OptimizedImage
           src={getImageSrc(program.imageUrl)}
           alt={`${program.destination} study abroad program`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
-          decoding="async"
+          aspectRatio="16/9"
         />
         {program.featured === "true" && (
           <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground" data-testid="badge-featured">
@@ -90,7 +91,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
       </CardContent>
 
       <CardFooter className="pt-0">
-        <Link href={`/programs`}>
+        <Link href={`/program-detail?id=${program.id}`}>
           <Button className="w-full" data-testid="button-learn-more">
             Learn More & Apply
           </Button>

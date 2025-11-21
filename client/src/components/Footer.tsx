@@ -17,10 +17,10 @@ export default function Footer() {
     {
       title: "Resources",
       links: [
-        { href: "/contact", label: "FAQs" },
+        { href: "/contact#faq", label: "FAQs" },
         { href: "/contact", label: "Application Guide" },
         { href: "/contact", label: "Visa Support" },
-        { href: "/contact", label: "Testimonials" },
+        { href: "/#testimonials", label: "Testimonials" },
       ]
     },
     {
