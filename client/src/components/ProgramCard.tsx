@@ -1,8 +1,6 @@
 import { Link } from "wouter";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Users, DollarSign } from "lucide-react";
 import { type Program } from "@shared/schema";
 import OptimizedImage from "@/components/OptimizedImage";
 import tokyoHero from "@assets/generated_images/Students_in_Tokyo_hero_366c34fa.png";
@@ -11,6 +9,27 @@ import studentsHero from "@assets/generated_images/Students_studying_together_he
 
 interface ProgramCardProps {
   program: Program;
+}
+
+// Helper function to get country flag emoji
+function getCountryFlag(country: string): string {
+  const flagMap: Record<string, string> = {
+    Japan: "🇯🇵",
+    Korea: "🇰🇷",
+    "South Korea": "🇰🇷",
+    China: "🇨🇳",
+    Spain: "🇪🇸",
+    France: "🇫🇷",
+    Germany: "🇩🇪",
+    Italy: "🇮🇹",
+    "United Kingdom": "🇬🇧",
+    UK: "🇬🇧",
+    Australia: "🇦🇺",
+    Canada: "🇨🇦",
+    "United States": "🇺🇸",
+    USA: "🇺🇸",
+  };
+  return flagMap[country] || "📍";
 }
 
 export default function ProgramCard({ program }: ProgramCardProps) {
@@ -22,81 +41,107 @@ export default function ProgramCard({ program }: ProgramCardProps) {
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden" data-testid={`card-program-${program.id}`}>
-      {/* Image */}
-      <div className="relative aspect-[16/9] overflow-hidden">
+    <article
+      className="group flex flex-col h-full bg-card border border-card-border rounded-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2 hover:border-primary/20 overflow-hidden"
+      data-testid={`card-program-${program.id}`}
+    >
+      {/* Image - 16:9 aspect ratio, rounded-xl top corners */}
+      <div className="relative aspect-[16/9] overflow-hidden rounded-t-xl">
         <OptimizedImage
           src={getImageSrc(program.imageUrl)}
           alt={`${program.destination} study abroad program`}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
           loading="lazy"
           aspectRatio="16/9"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         {program.featured === "true" && (
-          <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground" data-testid="badge-featured">
+          <Badge
+            className="absolute top-4 right-4 bg-primary text-primary-foreground"
+            data-testid="badge-featured"
+          >
             Featured
           </Badge>
         )}
         {program.spotsAvailable <= 5 && (
-          <Badge variant="destructive" className="absolute top-4 left-4" data-testid="badge-limited-spots">
+          <Badge
+            variant="destructive"
+            className="absolute top-4 left-4"
+            data-testid="badge-limited-spots"
+          >
             Only {program.spotsAvailable} spots left!
           </Badge>
         )}
       </div>
 
-      {/* Content */}
-      <CardHeader className="space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 mr-1" />
-            <span data-testid="text-destination">{program.destination}</span>
-          </div>
-          <Badge variant="secondary" data-testid="badge-level">{program.level}</Badge>
+      {/* Content - p-6 with gap-4 for internal elements */}
+      <div className="flex flex-col flex-1 p-6 gap-4">
+        {/* Destination flag + name */}
+        <div className="flex items-center gap-2">
+          <span className="text-xl" aria-hidden="true">
+            {getCountryFlag(program.country)}
+          </span>
+          <span
+            className="text-sm font-medium text-muted-foreground"
+            data-testid="text-destination"
+          >
+            {program.destination}
+          </span>
         </div>
-        <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors" data-testid="text-title">
+
+        {/* Program title */}
+        <h3
+          className="text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-300"
+          data-testid="text-title"
+        >
           {program.title}
         </h3>
-      </CardHeader>
 
-      <CardContent className="space-y-4">
-        <p className="text-muted-foreground leading-relaxed line-clamp-3" data-testid="text-description">
-          {program.description}
-        </p>
-
-        {/* Details */}
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2" data-testid="detail-duration">
-            <Clock className="w-4 h-4 text-muted-foreground" />
-            <span>{program.duration}</span>
-          </div>
-          <div className="flex items-center gap-2" data-testid="detail-price">
-            <DollarSign className="w-4 h-4 text-muted-foreground" />
-            <span>${program.price.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-2 col-span-2" data-testid="detail-spots">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <span>{program.spotsAvailable} spots available</span>
-          </div>
+        {/* Duration */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground" data-testid="detail-duration">
+          <span className="font-medium">Duration:</span>
+          <span>{program.duration}</span>
         </div>
 
-        {/* Highlights */}
-        <div className="space-y-1">
-          {program.highlights.slice(0, 3).map((highlight, index) => (
-            <div key={index} className="flex items-start gap-2 text-sm" data-testid={`highlight-${index}`}>
-              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0"></div>
-              <span className="text-muted-foreground">{highlight}</span>
-            </div>
-          ))}
+        {/* Price/Tuition */}
+        <div className="flex items-center gap-2" data-testid="detail-price">
+          <span className="text-sm font-medium text-foreground">Tuition:</span>
+          <span className="text-lg font-bold text-primary">
+            ${program.price.toLocaleString()}
+          </span>
         </div>
-      </CardContent>
 
-      <CardFooter className="pt-0">
-        <Link href={`/program-detail?id=${program.id}`}>
-          <Button className="w-full" data-testid="button-learn-more">
-            Learn More & Apply
-          </Button>
-        </Link>
-      </CardFooter>
-    </Card>
+        {/* Highlights - 3-4 bullets */}
+        <div className="space-y-2 flex-1">
+          <h4 className="text-sm font-semibold text-foreground">Highlights:</h4>
+          <ul className="space-y-1.5" aria-label="Program highlights">
+            {program.highlights.slice(0, 4).map((highlight, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-2 text-sm text-muted-foreground"
+                data-testid={`highlight-${index}`}
+              >
+                <span className="text-primary mt-1.5 flex-shrink-0" aria-hidden="true">
+                  •
+                </span>
+                <span>{highlight}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* CTA Button */}
+        <div className="pt-2">
+          <Link href={`/program-detail?id=${program.id}`}>
+            <Button 
+              className="w-full group-hover:scale-[1.02] transition-transform duration-300" 
+              data-testid="button-view-details"
+            >
+              View Details
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }

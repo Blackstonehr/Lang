@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+
+ Project Rules
+
+These are the official project commands. When the user invokes one of these, perform the action exactly as defined below.
+
+1. scaffold  
+   Create a new component/page/section using TypeScript + TSX + TailwindCSS + shadcn/ui.  
+   Follow folder structure conventions. Fully responsive. Semantic. No inline styles.
+
+2. codexpolish  
+   Use Codex inline to clean up spacing, layout, visuals, typography, and responsiveness inside ONE file.  
+   No logic changes. Tailwind only.
+
+3. codexrefactor  
+   Use Codex to structurally refactor ONE file: reorganize JSX, split elements, improve readability.  
+   No multi-file changes.
+
+4. extractcomponent  
+   Identify a repeated UI pattern and extract it into a reusable component in components/.  
+   Typed props. Tailwind styling. No business logic changes.
+
+5. integratelayoutshell  
+   Insert a component or section into the global app shell or layout.  
+   Ensure spacing matches design guidelines and works across all breakpoints.
+
+6. pagesection  
+   Implement an entire page section (Hero, Testimonials, Programs Grid, Footer, etc.).  
+   Cursor may edit multiple files. Follow visual design guidelines strictly.
+
+7. cleanstandard  
+   Clean a file: remove unused imports, fix Tailwind class order, improve ARIA, enforce TypeScript strictness, remove console logs.
+
+These commands operate within the User Rules and Docs context.  
+Do not perform actions outside the command invoked.  
+Respect TypeScript, Tailwind, shadcn/ui, semantics, responsiveness, and design_guidelines.md always.
+
+---

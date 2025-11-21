@@ -16,6 +16,7 @@ node_modules/
 .env.production.local
 ContinueBuilding.zip
 test-results/
+DockerDesktopWSL/
 
 # Temporary output files
 ci_check.txt
