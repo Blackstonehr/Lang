@@ -1,0 +1,4 @@
+{"location":"server/index.ts:82","message":"Environment detection","data":{"nodeEnv":"development","appEnv":"development","platform":"win32"},"timestamp":1763734517428,"sessionId":"debug-session","runId":"post-fix","hypothesisId":"B"}
+{"location":"server/index.ts:82","message":"Environment detection","data":{"nodeEnv":"development","appEnv":"development","platform":"win32"},"timestamp":1763734517428,"sessionId":"debug-session","runId":"post-fix","hypothesisId":"B"}
+{"location":"server/index.ts:88","message":"Taking development path - setting up Vite","data":{},"timestamp":1763734517441,"sessionId":"debug-session","runId":"post-fix","hypothesisId":"D"}
+{"location":"server/index.ts:88","message":"Taking development path - setting up Vite","data":{},"timestamp":1763734517441,"sessionId":"debug-session","runId":"post-fix","hypothesisId":"D"}
