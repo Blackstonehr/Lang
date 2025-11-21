@@ -12,6 +12,7 @@
 		"ms-vscode.js-nightly-debug",
 		"ms-vscode.js-nightly-debug-auto",
 		"ms-vscode.js-nightly-debug-auto",
+		"mtxr.sqltools-driver-pg",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

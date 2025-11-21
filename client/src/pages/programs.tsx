@@ -187,37 +187,39 @@ export default function ProgramsPage() {
         </section>
 
         {/* Programs Grid */}
-        <section className="py-16">
-          <div className="container mx-auto max-w-7xl px-4">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-10">
+        <section className="py-16 md:py-24" aria-label="Study abroad programs">
+          <div className="w-full max-w-7xl lg:max-w-screen-xl xl:max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 xl:px-16">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-12">
               <div>
-                <p className="text-sm uppercase tracking-[0.4em] text-muted-foreground">
+                <p className="text-sm uppercase tracking-[0.4em] text-muted-foreground mb-2">
                   Programs
                 </p>
-                <h2 className="text-3xl font-bold text-foreground">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground">
                   Explore immersive learning experiences
                 </h2>
               </div>
-              <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
+              <p className="text-sm lg:text-base text-muted-foreground" role="status" aria-live="polite">
                 Showing {filteredPrograms.length} curated{" "}
                 {filteredPrograms.length === 1 ? "program" : "programs"}.
               </p>
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div
                     key={i}
-                    className="h-96 bg-card border rounded-[28px] animate-pulse"
+                    className="h-96 bg-card border border-card-border rounded-xl animate-pulse"
                     data-testid={`skeleton-program-${i}`}
+                    aria-label="Loading program"
                   ></div>
                 ))}
               </div>
             ) : filteredPrograms.length > 0 ? (
               <div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
                 aria-live="polite"
+                role="list"
               >
                 {filteredPrograms.map((program) => (
                   <ProgramCard key={program.id} program={program} />
