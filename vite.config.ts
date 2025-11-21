@@ -1,7 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { fileURLToPath } from "node:url";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+const clientRoot = path.resolve(projectRoot, "client");
+const sharedRoot = path.resolve(projectRoot, "shared");
+const assetsRoot = path.resolve(projectRoot, "attached_assets");
 
 export default defineConfig({
   plugins: [
@@ -21,14 +27,14 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      "@": path.resolve(clientRoot, "src"), // Mirror tsconfig paths so "@/..." imports resolve for both Vite and TS.
+      "@shared": sharedRoot,
+      "@assets": assetsRoot,
     },
   },
-  root: path.resolve(import.meta.dirname, "client"),
+  root: clientRoot,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: path.resolve(projectRoot, "dist/public"),
     emptyOutDir: true,
     rollupOptions: {
       output: {
