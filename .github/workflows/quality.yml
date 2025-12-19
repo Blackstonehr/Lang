@@ -3,9 +3,9 @@ name: Quality & Lighthouse
 on:
   push:
     branches:
-      - main
-      - master
-      - Langu-v2
+      - main      # Primary development and deployment branch
+      - master    # Legacy branch name support
+      - Langu-v2  # Legacy / v1: Older release branch, kept for historical reference
   pull_request:
 
 env:

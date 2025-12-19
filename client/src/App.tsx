@@ -45,10 +45,12 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <SkipLink />
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-background text-foreground">
             <Navigation />
-            <main id="main-content" className="flex-1" tabIndex={-1}>
-              <Router />
+            <main id="main-content" className="flex-1 w-full" tabIndex={-1}>
+              <div className="w-full max-w-7xl lg:max-w-screen-xl xl:max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 xl:px-16 py-8">
+                <Router />
+              </div>
             </main>
             <Footer />
           </div>
